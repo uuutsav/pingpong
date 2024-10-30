@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Movables from './Movables'
 import Ball from './Ball'
 
-const Board = () => {
+const Board = ({start}) => {
     const pos = useRef();
     const [boardOffset, setBoardOffset] = useState({})
 
@@ -24,7 +24,7 @@ const Board = () => {
             <div className="wall h-[11px] w-full bg-white">            </div>
 
             <Movables />
-            {Object.keys(boardOffset).length > 0 && <Ball boardOffset={boardOffset} />}
+            {Object.keys(boardOffset).length > 0 && start && <Ball boardOffset={boardOffset} start={start} />}
 
             <div className="wall h-[11px] w-full mt-full bg-white">            </div>
         </div>

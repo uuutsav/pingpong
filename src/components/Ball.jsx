@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const Ball = ({ boardOffset }) => {
+const Ball = ({ start, boardOffset }) => {
     const startPosition = {
         x: ((boardOffset.left * 2) + boardOffset.width - 12) / 2,
         y: ((boardOffset.top * 2) + boardOffset.height - 12) / 2
@@ -14,10 +14,14 @@ const Ball = ({ boardOffset }) => {
 
     useEffect(() => {
         // move ball
-        const intervalId = continueGame();
-        console.log("rendered")
+        let intervalId;
+        if (start){
+            intervalId = continueGame();
+        }
+        console.log("rendered ", start)
 
-        return () => clearInterval(intervalId);
+
+        return () => stopGame(intervalId);
     }, [])
 
     const continueGame = () => {
