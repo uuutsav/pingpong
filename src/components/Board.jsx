@@ -11,7 +11,7 @@ const Board = ({start}) => {
             setBoardOffset({
                 top: pos.current.offsetTop,
                 right: pos.current.offsetLeft + pos.current.offsetWidth,
-                bottom: pos.current.offsetTop + pos.current.offsetTop,
+                bottom: pos.current.offsetTop + pos.current.offsetHeight,
                 left: pos.current.offsetLeft,
                 height: pos.current.offsetHeight,
                 width: pos.current.offsetWidth,
@@ -23,8 +23,8 @@ const Board = ({start}) => {
         <div className='h-[500px] w-[900px] bg-black flex flex-col justify-between' ref={pos}>
             <div className="wall h-[11px] w-full bg-white">            </div>
 
-            <Movables />
-            {Object.keys(boardOffset).length > 0 && start && <Ball boardOffset={boardOffset} start={start} />}
+            
+            {Object.keys(boardOffset).length > 0 && start && <Movables boardOffset={boardOffset} start={start} />}
 
             <div className="wall h-[11px] w-full mt-full bg-white">            </div>
         </div>

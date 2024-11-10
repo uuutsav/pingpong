@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const Ball = ({ start, boardOffset }) => {
+const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
     const startPosition = {
         x: ((boardOffset.left * 2) + boardOffset.width - 12) / 2,
         y: ((boardOffset.top * 2) + boardOffset.height - 12) / 2
@@ -9,13 +9,14 @@ const Ball = ({ start, boardOffset }) => {
     const [position, setPosition] = useState(startPosition)
     const ballRef = useRef();
 
-    let time = 40;
-    let speed = 5;
+    let time = 15; //12.5 == 80FPS
+    let speed = 8;
+    let direction = { x: 0.5, y: 0.5 };
 
     useEffect(() => {
         // move ball
         let intervalId;
-        if (start){
+        if (start) {
             intervalId = continueGame();
         }
         console.log("rendered ", start)
@@ -27,9 +28,8 @@ const Ball = ({ start, boardOffset }) => {
     const continueGame = () => {
         const intervalId = setInterval(() => {
             setPosition(prev => ({
-                x: prev.x + speed,
-                // y: prev.y + speed,
-                y: prev.y,
+                x: prev.x + (speed * direction.x),
+                y: prev.y + (speed * direction.y),
             }));
 
             const ballPosition = {
@@ -39,15 +39,7 @@ const Ball = ({ start, boardOffset }) => {
                 left: ballRef.current.offsetLeft,
             }
 
-            // red loss - ball touches left border of the board
-            if (ballPosition.left <= boardOffset.left) {
-                stopGame(intervalId);
-            }
-            // blue loss - ball touches right border of the board
-            if (ballPosition.right >= boardOffset.right) {
-                stopGame(intervalId);
-            }
-
+            checkCollision(ballPosition, intervalId);
 
             if (position.x > (boardOffset.left + boardOffset.width)) {
                 console.log("ehe")
@@ -60,6 +52,43 @@ const Ball = ({ start, boardOffset }) => {
     const stopGame = (intervalId) => {
         clearInterval(intervalId)
         setPosition(startPosition);
+    }
+
+    const checkCollision = (ballPosition, intervalId) => {
+        // red loss - ball touches left border of the board
+        if (ballPosition.left <= boardOffset.left) {
+            stopGame(intervalId);
+        }
+        // blue loss - ball touches right border of the board
+        if (ballPosition.right >= boardOffset.right) {
+            stopGame(intervalId);
+        }
+
+        // p1 hit the ball
+        if (ballPosition.right >= p1Offset.left) {
+            if ((ballPosition.bottom > p1Offset.top && ballPosition.top < p1Offset.bottom)) {
+                console.log("p1 hit the ball")
+            } else {
+                console.log("p1 missed")
+            }
+        }
+
+        // p2 hit the ball
+        if (ballPosition.left <= p2Offset.right) {
+            if ((ballPosition.bottom > p2Offset.top && ballPosition.top < p2Offset.bottom)) {
+                console.log("p2 hit the ball")
+            } else {
+                console.log("p2 missed")
+            }
+        }
+
+        // ball hit board boundary
+        if (ballPosition.bottom >= boardOffset.bottom){
+            console.log("bottom border touched")
+        }
+        if (ballPosition.top <= boardOffset.top) {
+            console.log("top border touched")
+        }
     }
 
     return (
