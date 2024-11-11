@@ -11,7 +11,7 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
 
     let time = 15; //12.5 == 80FPS
     let speed = 8;
-    let direction = { x: 0.5, y: 0.5 };
+    let direction = { x: 1, y: 0.5 };
 
     useEffect(() => {
         // move ball
@@ -68,8 +68,10 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
         if (ballPosition.right >= p1Offset.left) {
             if ((ballPosition.bottom > p1Offset.top && ballPosition.top < p1Offset.bottom)) {
                 console.log("p1 hit the ball")
+                direction.x = direction.x * -1;
             } else {
                 console.log("p1 missed")
+                stopGame(intervalId)
             }
         }
 
@@ -77,17 +79,20 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
         if (ballPosition.left <= p2Offset.right) {
             if ((ballPosition.bottom > p2Offset.top && ballPosition.top < p2Offset.bottom)) {
                 console.log("p2 hit the ball")
+                direction.x = direction.x * -1;
+
             } else {
                 console.log("p2 missed")
+                stopGame(intervalId)
             }
         }
 
         // ball hit board boundary
         if (ballPosition.bottom >= boardOffset.bottom){
-            console.log("bottom border touched")
+            direction.y = direction.y * -1;
         }
         if (ballPosition.top <= boardOffset.top) {
-            console.log("top border touched")
+            direction.y = direction.y * -1;
         }
     }
 

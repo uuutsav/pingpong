@@ -12,7 +12,7 @@ const Movables = ({ boardOffset, start }) => {
         let temp = {
             top: p1.current.offsetTop,
             right: p1.current.offsetLeft + p1.current.offsetWidth,
-            bottom: p1.current.offsetTop + p1.current.offsetTop,
+            bottom: p1.current.offsetTop + p1.current.offsetHeight,
             left: p1.current.offsetLeft,
             height: p1.current.offsetHeight,
             width: p1.current.offsetWidth,
@@ -21,7 +21,7 @@ const Movables = ({ boardOffset, start }) => {
         temp = {
             top: p2.current.offsetTop,
             right: p2.current.offsetLeft + p2.current.offsetWidth,
-            bottom: p2.current.offsetTop + p2.current.offsetTop,
+            bottom: p2.current.offsetTop + p2.current.offsetHeight,
             left: p2.current.offsetLeft,
             height: p2.current.offsetHeight,
             width: p2.current.offsetWidth,
