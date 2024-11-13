@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
+const Ball = ({ start, boardOffset, p1Offset, p2Offset, p1Position, p2Position }) => {
     const startPosition = {
         x: ((boardOffset.left * 2) + boardOffset.width - 12) / 2,
         y: ((boardOffset.top * 2) + boardOffset.height - 12) / 2
@@ -10,8 +10,8 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
     const ballRef = useRef();
 
     let time = 15; //12.5 == 80FPS
-    let speed = 8;
-    let direction = { x: 1, y: 0.5 };
+    let speed = 5;
+    let direction = { x: -0.5, y: 0.5 };
 
     useEffect(() => {
         // move ball
@@ -19,11 +19,14 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
         if (start) {
             intervalId = continueGame();
         }
-        console.log("rendered ", start)
-
 
         return () => stopGame(intervalId);
     }, [])
+
+    useEffect(() => {
+        localStorage.setItem('p1Pos', p1Position) // Workaround to get updated value inside the setInterval block
+        localStorage.setItem('p2Pos', p2Position)
+    }, [p1Position, p2Position])
 
     const continueGame = () => {
         const intervalId = setInterval(() => {
@@ -40,10 +43,6 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
             }
 
             checkCollision(ballPosition, intervalId);
-
-            if (position.x > (boardOffset.left + boardOffset.width)) {
-                console.log("ehe")
-            }
         }, time)
 
         return intervalId;
@@ -66,23 +65,27 @@ const Ball = ({ start, boardOffset, p1Offset, p2Offset }) => {
 
         // p1 hit the ball
         if (ballPosition.right >= p1Offset.left) {
-            if ((ballPosition.bottom > p1Offset.top && ballPosition.top < p1Offset.bottom)) {
-                console.log("p1 hit the ball")
+
+            const player = parseInt(localStorage.getItem('p1Pos')) + boardOffset.top;
+            if ((ballPosition.bottom > player && ballPosition.top < (player + p1Offset.height +15))) {
+                // console.log("p1 hit the ball ", ballPosition, player)
                 direction.x = direction.x * -1;
             } else {
-                console.log("p1 missed")
+                // console.log("p1 missed")
                 stopGame(intervalId)
             }
         }
 
         // p2 hit the ball
         if (ballPosition.left <= p2Offset.right) {
-            if ((ballPosition.bottom > p2Offset.top && ballPosition.top < p2Offset.bottom)) {
-                console.log("p2 hit the ball")
+
+            const player = parseInt(localStorage.getItem('p2Pos')) + boardOffset.top;
+            if ((ballPosition.bottom > player && ballPosition.top < (player + p2Offset.height +15))) {
+                // console.log("p2 hit the ball", ballPosition, player)
                 direction.x = direction.x * -1;
 
             } else {
-                console.log("p2 missed")
+                // console.log("p2 missed", ballPosition, player)
                 stopGame(intervalId)
             }
         }
